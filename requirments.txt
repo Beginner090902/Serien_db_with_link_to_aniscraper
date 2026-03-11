@@ -1,0 +1,7 @@
+requests
+sqlit
+bs4
+tqdm
+snakeviz
+urllib.parse
+collections
