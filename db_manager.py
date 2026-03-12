@@ -11,7 +11,6 @@ class DBManager:
     def _connect(self):
         """Verbindung öffnen und Cursor erzeugen."""
         self.conn = sqlite3.connect(self.db_file)
-        #self.conn.execute("PRAGMA foreign_keys = ON")  # FK-Support falls gewünscht
 
     def close(self):
         """Verbindung schließen."""
@@ -31,58 +30,66 @@ class DBManager:
 
     # --------------- spezifische Funktionen ----------------
 
-    def create_table_alle_namen(self):
-        sql = """
-        CREATE TABLE IF NOT EXISTS alle_namen (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            such_url TEXT NOT NULL
-        )
-        """
-        self.execute(sql)
+    def create_table(self,table_name: str):
 
-    def create_table_gefundene_namen(self):
-        sql = """
-        CREATE TABLE IF NOT EXISTS gefundene_namen (
+        sql = f"""
+        CREATE TABLE IF NOT EXISTS {table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             such_url TEXT NOT NULL,
-            seiten_title TEXT,
-            year INTEGER
+            real_name TEXT,
+            year TEXT,
+            image BLOB
         )
         """
         self.execute(sql)
 
-
-    def add_name_in_gefundene_namen(self, such_url: str, seiten_title: str, year: int):
+    def add_such_url_in_table(self,table_name:str, such_url: str):
         """Datensatz einfügen."""
         sql = f"""
-        INSERT INTO gefundene_namen (such_url, seiten_title, year)
-        VALUES (?, ?, ?)
-        """
-        self.execute(sql,(such_url, seiten_title, year))
-
-    def add_name_in_alle_namen(self, such_url):
-        sql = f"""
-        INSERT INTO alle_namen (such_url)
+        INSERT INTO {table_name} (such_url)
         VALUES (?)
         """
         self.execute(sql,(such_url,))
 
-    def get_all(self,in_table:str) -> List[Tuple]:
+    def add_real_name_on_url_in_table(self, real_name:str,such_url:str, table_name:str):
+        sql = f"""
+        UPDATE {table_name},
+        SET real_name (real_name)
+        WHERE (such_url)
+        """
+        self.execute(sql,(real_name,such_url))
+
+    def add_year_in_table(self,table_name:str, such_url:str, year:str):
+        sql = f"""
+        UPDATE {table_name},
+        SET year (year)
+        WHERE (such_url)
+        """
+        self.execute(sql,(year,such_url))
+
+
+    def add_image_in_table(self,table_name:str, such_url:str, image:str):
+        sql = f"""
+        UPDATE {table_name},
+        SET image (image)
+        WHERE (such_url)
+        """
+        self.execute(sql,(image,such_url))
+
+    def get_all_in_table(self,table_name:str) -> List[Tuple]:
         """Alle Einträge auslesen."""
-        sql = f"SELECT * FROM {in_table}"
+        sql = f"SELECT * FROM {table_name}"
         cur = self.execute(sql)
         return cur.fetchall()
 
-    def find_by_title(self, such_url: str,in_table) -> List[Tuple]:
+    def find_by_title_in_table(self, such_url: str,table_name) -> List[Tuple]:
         """Sätze zu einem bestimmten Title finden."""
-        sql = f"SELECT * FROM {in_table} WHERE such_url LIKE ?"
-        cur = self.execute(sql, (f"%{such_url}%",))
+        sql = f"SELECT * FROM {table_name} WHERE such_url LIKE ?"
+        cur = self.execute(sql, (such_url,))
         return cur.fetchall()
     
-    def delete_all_in_table(self,in_table):
-        sql = f"DELETE FROM {in_table}"
+    def delete_all_in_table(self,table_name):
+        sql = f"DELETE FROM {table_name}"
         self.execute(sql, params=())
-        sql = f"UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='{in_table}'"
+        sql = f"UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='{table_name}'"
         self.execute(sql, params=())
-
-        
