@@ -81,6 +81,20 @@ class DBManager:
         sql = f"SELECT * FROM {table_name}"
         cur = self.execute(sql)
         return cur.fetchall()
+    
+    def get_all_collum_in_table(self,table_name:str,coolum:str) -> List[Tuple]:
+        """Alle Einträge auslesen."""
+        sql = f"SELECT {coolum} FROM {table_name}"
+        cur = self.execute(sql)
+        return cur.fetchall()
+
+    def get_serie_information(self,such_url:str,table_name:str):
+        sql = f"""
+        SELECT * FROM {table_name} WHERE such_url = ?
+        """
+        cur = self.execute(sql,(such_url,))
+        return cur.fetchone()
+
 
     def find_by_title_in_table(self, such_url: str,table_name) -> List[Tuple]:
         """Sätze zu einem bestimmten Title finden."""

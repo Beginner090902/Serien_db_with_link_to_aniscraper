@@ -3,3 +3,5 @@ sqlit
 bs4
 tqdm
 snakeviz
+Flask
+Flask-Login
