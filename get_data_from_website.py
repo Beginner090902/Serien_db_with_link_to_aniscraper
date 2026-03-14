@@ -81,6 +81,7 @@ def add_year_real_name_imgage_to_db(start_url:str,such_url:str):
     print("Update all Names ")
     with tqdm(total=len(list_of_all_anime)) as pbar:
         for anime_url in list_of_all_anime:
+            #print(anime_url[2])
             if anime_url[2] == None: 
                 anime_name = get_name(start_url=webseite_url_for_ane_anime,such_url=anime_url[1])
                 db.add_real_name_on_url_in_table(real_name=anime_name,such_url=anime_url[1],table_name=table_anime_namen)
@@ -89,6 +90,7 @@ def add_year_real_name_imgage_to_db(start_url:str,such_url:str):
     print("Update all year stamps ")
     with tqdm(total=len(list_of_all_anime)) as pbar:
         for anime_url in list_of_all_anime:
+            #print(anime_url[3])
             if anime_url[3] == None:
                 anime_year = get_year(start_url=webseite_url_for_ane_anime,such_url=anime_url[1])
                 db.add_year_in_table(table_name=table_anime_namen,such_url=anime_url[1],year=anime_year)
@@ -97,6 +99,7 @@ def add_year_real_name_imgage_to_db(start_url:str,such_url:str):
     print("Update all Images ")
     with tqdm(total=len(list_of_all_anime)) as pbar:
         for anime_url in list_of_all_anime:
+            #print(anime_url[4])
             if anime_url[4] == None:
                 anime_img = get_image(start_url=webseite_url_for_ane_anime,such_url=anime_url[1])
                 db.add_image_in_table(table_name=table_anime_namen,such_url=anime_url[1],image=anime_img)

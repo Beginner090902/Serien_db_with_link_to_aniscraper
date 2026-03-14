@@ -107,3 +107,10 @@ class DBManager:
         self.execute(sql, params=())
         sql = f"UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='{table_name}'"
         self.execute(sql, params=())
+
+    def clear_collum(self,table_name:str,collum_name:str):
+        sql = f"""
+        UPDATE {table_name}
+        SET {collum_name} = NULL
+        """
+        self.execute(sql)
