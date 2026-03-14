@@ -53,28 +53,28 @@ class DBManager:
 
     def add_real_name_on_url_in_table(self, real_name:str,such_url:str, table_name:str):
         sql = f"""
-        UPDATE {table_name},
-        SET real_name (real_name)
-        WHERE (such_url)
+        UPDATE {table_name}
+        SET real_name = ?
+        WHERE such_url = ?
         """
         self.execute(sql,(real_name,such_url))
 
     def add_year_in_table(self,table_name:str, such_url:str, year:str):
         sql = f"""
-        UPDATE {table_name},
-        SET year (year)
-        WHERE (such_url)
+        UPDATE {table_name}
+        SET year = ?
+        WHERE such_url = ?
         """
-        self.execute(sql,(year,such_url))
+        self.execute(sql,(year,such_url,))
 
 
     def add_image_in_table(self,table_name:str, such_url:str, image:str):
         sql = f"""
-        UPDATE {table_name},
-        SET image (image)
-        WHERE (such_url)
+        UPDATE {table_name}
+        SET image = ?
+        WHERE such_url = ?
         """
-        self.execute(sql,(image,such_url))
+        self.execute(sql,(image,such_url,))
 
     def get_all_in_table(self,table_name:str) -> List[Tuple]:
         """Alle Einträge auslesen."""
