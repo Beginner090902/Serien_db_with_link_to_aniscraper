@@ -95,6 +95,10 @@ class DBManager:
         cur = self.execute(sql,(such_url,))
         return cur.fetchone()
 
+    def filter_nach_name(self,such_name:str,table_name:str):
+        sql = f"SELECT * FROM {table_name} WHERE real_name LIKE ?"
+        cur = self.execute(sql, (f"%{such_name}%",))
+        return cur.fetchall()
 
     def find_by_title_in_table(self, such_url: str,table_name) -> List[Tuple]:
         """Sätze zu einem bestimmten Title finden."""

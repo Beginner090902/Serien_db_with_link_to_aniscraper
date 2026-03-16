@@ -2,6 +2,10 @@
 
 {% block content %}
     <h1>{% block title %} Welcome to Serien name DB {% endblock %}</h1>
+    <form action="/search" method="GET">
+        <input type="text" name="such_name" placeholder="Suchen...">
+        <button type="submit">Suchen</button>
+    </form>
       {% for post in posts %}
         <a href="{{ url_for('serie_name', such_url=post['such_url']) }}">
             <h5>{{ post['such_url'] }}</h5>
