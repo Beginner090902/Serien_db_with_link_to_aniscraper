@@ -3,11 +3,11 @@
 {% block content %}
   <h2>{{post[2]}}</h2>
   <table>
-    <tr><th>URL</th><th>Jear</th><th>Image</th></tr>
+    <tr><th>URL</th><th>Jear</th></tr>
     <tr>
       <td>{{ post[1] }}</td>
-      <td>{{ post[2] }}</td>
       <td>{{ post[3] }}</td>
     </tr>
   </table>
+  <img src="{{ post[4] }}">
 {% endblock %}

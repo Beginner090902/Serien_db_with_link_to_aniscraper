@@ -38,7 +38,7 @@ class DBManager:
             such_url TEXT NOT NULL,
             real_name TEXT,
             year TEXT,
-            image BLOB
+            image_url TEXT
         )
         """
         self.execute(sql)
@@ -68,13 +68,13 @@ class DBManager:
         self.execute(sql,(year,such_url,))
 
 
-    def add_image_in_table(self,table_name:str, such_url:str, image:str):
+    def add_image_in_table(self,table_name:str, such_url:str, image_url:str):
         sql = f"""
         UPDATE {table_name}
-        SET image = ?
+        SET image_url = ?
         WHERE such_url = ?
         """
-        self.execute(sql,(image,such_url,))
+        self.execute(sql,(image_url,such_url,))
 
     def get_all_in_table(self,table_name:str) -> List[Tuple]:
         """Alle Einträge auslesen."""
