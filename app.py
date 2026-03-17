@@ -19,9 +19,18 @@ def get_db_connection():
 
 app = Flask(__name__)
 
-
 @app.route('/')
-def index() -> str:
+def index():
+    return render_template('base.html')
+
+@app.route('/serien_names_sto')
+def serien_names_sto() -> str:
+    db = DBManager(db_file)
+    all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=table_names[1])
+    return render_template('index.html',posts=all_anime_urls)
+
+@app.route('/serien_names_aniworld')
+def serien_names_aniworld() -> str:
     db = DBManager(db_file)
     all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=table_names[0])
     return render_template('index.html',posts=all_anime_urls)
@@ -60,9 +69,9 @@ def view_database_sto():
 
     return render_template('view_db.html', daten=liste_table)
 
-@app.route('/data')
-def data():
-    return render_template('data.html')
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

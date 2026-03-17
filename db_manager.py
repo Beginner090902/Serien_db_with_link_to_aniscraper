@@ -67,7 +67,6 @@ class DBManager:
         """
         self.execute(sql,(year,such_url,))
 
-
     def add_image_in_table(self,table_name:str, such_url:str, image_url:str):
         sql = f"""
         UPDATE {table_name}
