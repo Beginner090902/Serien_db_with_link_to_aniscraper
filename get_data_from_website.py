@@ -31,19 +31,22 @@ def get_all_url_names(start_url):
 
         parsed = urlparse(absolute_url)
         if parsed.scheme in ("http", "https"):
-            if "/stream/" in absolute_url:
+            if "aniworld.to/anime/stream/" in absolute_url:
                 absolute_url = absolute_url.replace("https://aniworld.to/anime/stream/", "")
+                found_urls.add(absolute_url)
+            elif "s.to/serie/" in absolute_url:
+                absolute_url = absolute_url.replace("https://s.to/serie/", "")
                 found_urls.add(absolute_url)
     sorted_urls = sorted(found_urls)
     return sorted_urls
 
-def add_all_urls(list:set|list):
+def add_all_urls_in_table(list:set|list,table_name:str):
     print("Add url to db")
     with tqdm(total=len(list)) as pbar:
         for u in list:
-            finde_url_in_data_base = db.find_by_title_in_table(table_name=table_anime_namen,such_url=u)
+            finde_url_in_data_base = db.find_by_title_in_table(table_name=table_name,such_url=u)
             if not finde_url_in_data_base:
-                db.add_such_url_in_table(such_url=u,table_name=table_anime_namen)
+                db.add_such_url_in_table(such_url=u,table_name=table_name)
             pbar.update()
 
 def get_year(start_url:str,such_url:str) -> str:
@@ -72,19 +75,18 @@ def get_image(start_url:str,such_url:str):
     img = soup.find("img", itemprop="image")
     img_url_intern = img.get("data-src")
     img_url = urljoin(start_url, img_url_intern)
-
     return img_url
 
-def add_year_real_name_imgage_to_db(start_url:str):
+def add_year_real_name_imgage_to_table_in_db(start_url:str,table_name:str):
 
-    list_of_all_anime = db.get_all_in_table(table_name=table_anime_namen)
+    list_of_all_anime = db.get_all_in_table(table_name=table_name)
     print("Update all Names ")
     with tqdm(total=len(list_of_all_anime)) as pbar:
         for anime_url in list_of_all_anime:
             #print(anime_url[2])
             if anime_url[2] == None: 
                 anime_name = get_name(start_url=start_url,such_url=anime_url[1])
-                db.add_real_name_on_url_in_table(real_name=anime_name,such_url=anime_url[1],table_name=table_anime_namen)
+                db.add_real_name_on_url_in_table(real_name=anime_name,such_url=anime_url[1],table_name=table_name)
             pbar.update()
             time.sleep(0.0001)
             
@@ -95,7 +97,7 @@ def add_year_real_name_imgage_to_db(start_url:str):
             #print(anime_url[3])
             if anime_url[3] == None:
                 anime_year = get_year(start_url=start_url,such_url=anime_url[1])
-                db.add_year_in_table(table_name=table_anime_namen,such_url=anime_url[1],year=anime_year)
+                db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year)
             pbar.update()
             time.sleep(0.0001)
 
@@ -105,20 +107,10 @@ def add_year_real_name_imgage_to_db(start_url:str):
             #print(anime_url[4])
             if anime_url[4] == None:
                 anime_img_url = get_image(start_url=start_url,such_url=anime_url[1])
-                db.add_image_in_table(table_name=table_anime_namen,such_url=anime_url[1],image_url=anime_img_url)
+                db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_img_url)
             pbar.update()
             time.sleep(0.0001)
 
-if __name__ == "__main__":
-    webseite_url_all_anime = "https://aniworld.to/animes/"
-    webseite_url_for_one_anime = "https://aniworld.to/anime/"
-    table_anime_namen = "anime_namen"
-    db = DBManager("instance/aniworld.db")
 
-    db.create_table(table_name=table_anime_namen)
-    all_urls = get_all_url_names(start_url=webseite_url_all_anime)
-    add_all_urls(all_urls)
-    
-    add_year_real_name_imgage_to_db(start_url=webseite_url_for_one_anime)
-    db.close()
+
 
