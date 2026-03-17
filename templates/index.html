@@ -1,15 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
+<h1>{% block title %} Welcome to Serien name DB {% endblock %}</h1>
+<input type="text" id="search" placeholder="Suchen...">
+<div id="results"></div>
 
-{% block content %}
-    <h1>{% block title %} Welcome to Serien name DB {% endblock %}</h1>
-    <form action="/search" method="GET">
-        <input type="text" name="such_name" placeholder="Suchen...">
-        <button type="submit">Suchen</button>
-    </form>
-      {% for post in posts %}
-        <a href="{{ url_for('serie_name', such_url=post[0]) }}">
-            <h5>{{ post[1] }}</h5>
-        </a>
-        <hr>
-    {% endfor %}
+
+<script>
+function search(value="") {
+    fetch(`/search?such_name=${value}`)
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("results").innerHTML = data;
+        });
+}
+
+// Event für Eingabe
+document.getElementById("search").addEventListener("input", function() {
+    search(this.value);
+});
+
+search();
+</script>
 {% endblock %}

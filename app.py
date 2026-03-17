@@ -32,13 +32,16 @@ def serie_name(such_url):
 
 @app.route('/search')
 def search():
-    # Suchbegriff aus dem GET-Parameter 'q' abrufen
-    such_name: str   = request.args.get('such_name', '').lower()
+    such_name = request.args.get('such_name', '').lower()
 
     db = DBManager(aniworld_db)
-    list_such_name = db.filter_nach_name(table_name=tabel_name_anime,such_name=such_name)
+    list_such_name = db.filter_nach_name(
+        table_name=tabel_name_anime,
+        such_name=such_name
+    )
     db.close()
-    return render_template('index.html',posts=list_such_name)
+
+    return render_template('_search_results.html', posts=list_such_name)
 
 @app.route('/data')
 def data():
