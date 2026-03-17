@@ -1,6 +1,6 @@
 {% for post in posts %}
     <a href="{{ url_for('serie_name', such_url=post[0]) }}">
-        <h5>{{ post[0] }}</h5>
+        <h5>{{ post[1] }}</h5>
     </a>
     <hr>
 {% endfor %}

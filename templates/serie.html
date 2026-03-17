@@ -1,13 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
 
-{% block content %}
-  <h2>{{post[2]}}</h2>
-  <table>
-    <tr><th>URL</th><th>Jear</th></tr>
-    <tr>
-      <td>{{ post[1] }}</td>
-      <td>{{ post[3] }}</td>
-    </tr>
-  </table>
-  <img src="{{ post[4] }}">
+<div class="container mt-4">
+  <div class="card shadow-lg p-3 mb-5 bg-body rounded">
+    <div class="row g-0">
+      <!-- LEFT: TEXT -->
+      <div class="col-md-8">
+        <div class="card-body">
+          <h3 class="card-title">{{ post[2] }}</h3>
+
+          <p class="card-text">
+            <strong>URL:</strong> {{ post[1] }} <br />
+            <strong>Jahr:</strong> {{ post[3] }} <br />
+          </p>
+
+          <!-- Buttons -->
+          <div class="mt-3">
+            <a href="{{ post[1] }}" class="btn btn-success me-2">
+              ⬇ Start Download
+            </a>
+
+            <a href="{{ post[1] }}" target="_blank" class="btn btn-primary">
+              🌐 Go to Serie on Aniworld
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: IMAGE -->
+      <div
+        class="col-md-4 d-flex align-items-center justify-content-center p-2"
+      >
+        <img
+          src="{{ post[4] }}"
+          class="img-fluid rounded"
+          style="max-height: 250px; object-fit: cover"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
