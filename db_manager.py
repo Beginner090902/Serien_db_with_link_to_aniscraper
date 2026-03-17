@@ -95,8 +95,13 @@ class DBManager:
         cur = self.execute(sql,(such_url,))
         return cur.fetchone()
 
+    def get_all_serien_url_from_table(self,table_name:str):
+        sql = f"SELECT such_url, real_name FROM {table_name}"
+        cur = self.execute(sql)
+        return cur.fetchall()
+
     def filter_nach_name(self,such_name:str,table_name:str):
-        sql = f"SELECT * FROM {table_name} WHERE real_name LIKE ?"
+        sql = f"SELECT such_url, real_name FROM {table_name} WHERE real_name LIKE ?"
         cur = self.execute(sql, (f"%{such_name}%",))
         return cur.fetchall()
 

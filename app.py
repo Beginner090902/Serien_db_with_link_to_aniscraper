@@ -18,10 +18,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def index() -> str:
-    conn: Connection = get_db_connection()
-    list_url: list[str] = conn.execute('SELECT such_url FROM anime_namen ').fetchall()
-    conn.close()
-    return render_template('index.html',posts=list_url)
+    db = DBManager(aniworld_db)
+    all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=tabel_name_anime)
+    print(all_anime_urls)
+    return render_template('index.html',posts=all_anime_urls)
 
 @app.route('/<string:such_url>')
 def serie_name(such_url):
@@ -38,7 +38,6 @@ def search():
     db = DBManager(aniworld_db)
     list_such_name = db.filter_nach_name(table_name=tabel_name_anime,such_name=such_name)
     db.close()
-    print(list_such_name)
     return render_template('index.html',posts=list_such_name)
 
 @app.route('/data')
