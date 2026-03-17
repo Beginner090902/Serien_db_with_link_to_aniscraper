@@ -6,7 +6,6 @@ from werkzeug.exceptions import abort
 from db_manager import DBManager
 import get_data_from_website as get_data 
 
-tabel_name_anime="anime_namen"
 db_file="instance/aniworld.db"
 
 table_names = ["anime_namen","serien_namen"]
@@ -20,16 +19,17 @@ def get_db_connection():
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index() -> str:
     db = DBManager(db_file)
-    all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=tabel_name_anime)
+    all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=table_names[0])
     return render_template('index.html',posts=all_anime_urls)
 
 @app.route('/<string:such_url>')
 def serie_name(such_url):
     db = DBManager(db_file)
-    post = db.get_serie_information(such_url=such_url,table_name=tabel_name_anime)
+    post = db.get_serie_information(such_url=such_url,table_name=table_names[0])
     db.close()
     return render_template('serie.html', post=post)
 
@@ -39,12 +39,26 @@ def search():
 
     db = DBManager(db_file)
     list_such_name = db.filter_nach_name(
-        table_name=tabel_name_anime,
+        table_name=table_names[0],
         such_name=such_name
     )
     db.close()
 
     return render_template('_search_results.html', posts=list_such_name)
+
+@app.route('/view_database_aniworld')
+def view_database_aniworld():
+    db = DBManager(db_file)
+    liste_table = db.get_all_in_table(table_name=table_names[0])
+
+    return render_template('view_db.html', daten=liste_table)
+
+@app.route('/view_database_sto')
+def view_database_sto():
+    db = DBManager(db_file)
+    liste_table = db.get_all_in_table(table_name=table_names[1])
+
+    return render_template('view_db.html', daten=liste_table)
 
 @app.route('/data')
 def data():

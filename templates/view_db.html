@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Datenbank-Inhalt{% endblock %}
+
+{% block content %}
+<h1>Datenbank-Inhalt</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Weitere Spalte 1</th>
+                <th>Weitere Spalte 2</th>
+                <th>Img Url</th>
+                <!-- Hier weitere Spalten je nach deiner DB-Struktur -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for eintrag in daten %}
+            <tr>
+                <td>{{ eintrag[0] }}</td>
+                <td>{{ eintrag[1] }}</td>
+                <td>{{ eintrag[2] }}</td>
+                <td>{{ eintrag[3] }}</td>
+                <td>{{ eintrag[4] }}</td>
+                <!-- Weitere Spalten entsprechend -->
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">Keine Einträge in der Datenbank</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Optional: Zurück-Button -->
+<a href="{{ url_for('index') }}" class="btn btn-primary">Zurück zur Startseite</a>
+{% endblock %}
