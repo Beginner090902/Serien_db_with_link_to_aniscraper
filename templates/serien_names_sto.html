@@ -5,8 +5,8 @@
 
 
 <script>
-function search(value="") {
-    fetch(`/search?such_name=${value}`)
+function search(value) {
+    fetch(`/search-sto?such_name=${value}`)
         .then(res => res.text())
         .then(data => {
             document.getElementById("results").innerHTML = data;
@@ -18,6 +18,6 @@ document.getElementById("search").addEventListener("input", function() {
     search(this.value);
 });
 
-search();
+search("");
 </script>
 {% endblock %}
