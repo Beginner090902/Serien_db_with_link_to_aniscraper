@@ -18,6 +18,8 @@ def get_db_connection():
     return conn
 
 app = Flask(__name__)
+app.secret_key = 'dein-geheimer-schlussel'
+
 
 @app.route('/')
 def index():
@@ -69,8 +71,21 @@ def view_database_sto():
 
     return render_template('view_db.html', daten=liste_table)
 
-@app.route('/settings')
-def settings():
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():    
+    if request.method == 'POST':
+        if 'create_ani_sto_db' in request.form:
+            try:
+                db = DBManager(db_file=db_file)
+                for table_name in table_names:
+                    result = db.create_table(table_name)
+                    flash(result, 'success')
+
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+            
+            return redirect(url_for('settings'))
+
     return render_template('settings.html')
 
 @app.route('/register', methods=['GET', 'POST'])

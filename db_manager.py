@@ -42,6 +42,7 @@ class DBManager:
         )
         """
         self.execute(sql)
+        return f"Table {table_name} created or is already existing"
 
     def add_such_url_in_table(self,table_name:str, such_url: str):
         """Datensatz einfügen."""
