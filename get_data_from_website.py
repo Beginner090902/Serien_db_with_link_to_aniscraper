@@ -27,17 +27,10 @@ def get_all_url_names(start_url):
 
         if href.startswith(("mailto:", "javascript:", "tel:", "#")):
             continue
-
-        absolute_url = urljoin(start_url, href)
-
-        parsed = urlparse(absolute_url)
-        if parsed.scheme in ("http", "https"):
-            if "aniworld.to/anime/stream/" in absolute_url:
-                absolute_url = absolute_url.replace("https://aniworld.to/anime/stream/", "")
-                found_urls.add(absolute_url)
-            elif "s.to/serie/" in absolute_url:
-                absolute_url = absolute_url.replace("https://s.to/serie/", "")
-                found_urls.add(absolute_url)
+        
+        if ("/serie/" or "stream") not in href:
+            continue
+        found_urls.add(href)
     sorted_urls = sorted(found_urls)
     return sorted_urls
 
@@ -54,31 +47,60 @@ def add_all_urls_in_table(list:set|list,table_name:str):
     return f"Updated all urls in {table_name}"
 
 def get_year(start_url:str,such_url:str) -> str:
-    full_url = f"{start_url}stream/{such_url}"
-    response = requests.get(full_url, headers=headers, timeout=100)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    jahr_start = soup.find("span", itemprop="startDate").find("a").text.strip()
-    jahr_ende = soup.find("span", itemprop="endDate").find("a").text.strip()
-    jahr_zusammen= f"{jahr_start}-{jahr_ende}"
+    if "aniworld" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        jahr_start = soup.find("span", itemprop="startDate").find("a").text.strip()
+        jahr_ende = soup.find("span", itemprop="endDate").find("a").text.strip()
+        jahr_zusammen= f"{jahr_start}-{jahr_ende}"
+    elif"s.to" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        jahr_start = soup.find("a", "small text-muted").text.strip()
+        jahr_ende = soup.find("a", "small -textmuted").text.strip()
+        jahr_zusammen= f"{jahr_start}-{jahr_ende}"
+
     return jahr_zusammen
 
 def get_name(start_url:str,such_url:str):
-    full_url = f"{start_url}stream/{such_url}"
-    response = requests.get(full_url, headers=headers, timeout=100)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    real_name = soup.find("h1").find("span").text.strip()
+    if "aniworld" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        real_name = soup.find("h1").find("span").text.strip()
+    elif"s.to" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        real_name = soup.find("h1", "h2 mb-1 fw-bold").text.strip()
+    
     return real_name
 
 def get_image(start_url:str,such_url:str): 
-    full_url = f"{start_url}stream/{such_url}"
-    response = requests.get(full_url, headers=headers, timeout=100)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    img = soup.find("img", itemprop="image")
-    img_url_intern = img.get("data-src")
-    img_url = urljoin(start_url, img_url_intern)
+    if "aniworld" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        img = soup.find("img", itemprop="image")
+        img_url_intern = img.get("data-src")
+        img_url = urljoin(start_url, img_url_intern)
+    elif "s.to" in start_url:
+        full_url = f"{start_url}stream/{such_url}"
+        response = requests.get(full_url, headers=headers, timeout=100)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        img_grob_gefunden = soup.find("div","d-md-none float-end text-end show-cover-mobile")
+        img = img_grob_gefunden.find("img")
+        img_url_intern = img.get('data-src')
+        img_url = urljoin(start_url, img_url_intern)
+        
     return img_url
 
 def add_year_real_name_imgage_to_table_in_db(start_url:str,table_name:str):
