@@ -1,60 +1,85 @@
-{% extends "base.html" %}
-
-{% block title %}Einstellungen{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Einstellungen{% endblock %} {% block
+content %}
 <div class="container mt-4">
-    <h1>Einstellungen</h1>
-    
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Datenbanken erstellen</h5>
-                </div>
-                <div class="card-body">
-                    <!-- POST-Formular für Ani DB -->
-                    <form method="POST" action="{{ url_for('settings') }}">
-                        <button type="submit" 
-                                name="create_ani_sto_db" 
-                                value="1"
-                                class="btn btn-primary mb-2">
-                            Create db for Ani and sto
-                        </button>
-                    </form>
-                    <form method="POST" action="{{ url_for('settings') }}">
-                        <button type="submit" 
-                                name="update_ani_db" 
-                                value="1"
-                                class="btn btn-primary mb-2">
-                            Update Ani db
-                        </button>
-                    </form>
-                    <form method="POST" action="{{ url_for('settings') }}">
-                        <button type="submit" 
-                                name="update_sto_db" 
-                                value="1"
-                                class="btn btn-primary mb-2">
-                            Update sto db
-                        </button>
-                    </form>
-                </div>
-            </div>
+  <h1>Einstellungen</h1>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div
+    class="alert alert-{{ category }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Aniworld db settings</h5>
         </div>
+        <div class="card-body">
+          <!-- POST-Formular für Ani DB -->
+          <form method="POST" action="{{ url_for('settings') }}">
+            <button
+              type="submit"
+              name="create_ani_table"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              Create db table for Ani
+            </button>
+          </form>
+          <form method="POST" action="{{ url_for('settings') }}">
+            <button
+              type="submit"
+              name="update_ani_urls_db"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              Update db urls for Ani
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Sto db settings</h5>
+        </div>
+        <div class="card-body">
+          <!-- POST-Formular für Ani DB -->
+          <form method="POST" action="{{ url_for('settings') }}">
+            <button
+              type="submit"
+              name="create_sto_table"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              Create db table for Sto
+            </button>
+          </form>
+          <form method="POST" action="{{ url_for('settings') }}">
+            <button
+              type="submit"
+              name="update_sto_urls_db"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              Update db urls for Sto
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

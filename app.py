@@ -84,27 +84,35 @@ def view_database_sto():
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():    
     if request.method == 'POST':
+        db = DBManager(db_file)        
         
-        
-        if 'create_ani_sto_db' in request.form:
+        if 'create_ani_table' in request.form:
             try:
-                for table_name in table_names:
-                    result = db.create_table(table_name)
-                    flash(result, 'success')
+                result = db.create_table(table_names[0])
+                flash(result, 'success')
+
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
+        elif 'create_sto_table' in request.form:
+            try:
+                result = db.create_table(table_names[1])
+                flash(result, 'success')
 
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
             
 
-        elif 'update_ani_db' in request.form:
+        elif 'update_ani_urls_db' in request.form:
             try:
                 result = add_all_urls_in_table(table_name=table_names[0],list=get_all_url_names(start_url=webseiten_einzelneserie_url[0]))
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
+        elif "update_sto_urls_db":    
             try:
-                result = add_year_real_name_imgage_to_table_in_db(table_name=table_names[0],start_url=webseiten_einzelneserie_url[0])
+                result = add_all_urls_in_table(table_name=table_names[1],list=get_all_url_names(start_url=webseiten_einzelneserie_url[1]))
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
