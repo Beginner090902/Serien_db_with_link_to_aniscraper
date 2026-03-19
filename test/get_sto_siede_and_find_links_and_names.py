@@ -84,7 +84,4 @@ def get_all_url_names(start_url):
 #print(get_year())
 #print(get_name())
 #print(get_image(start_url))
-result =get_all_url_names(start_url)
-print(len(result))
-print(result[0])
-print(result[-1])
+#print(get_all_url_names(start_url))
