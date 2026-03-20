@@ -109,6 +109,20 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
+        elif 'update_ani_name_db' in request.form:
+            try:
+                result = add_name(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
+                flash(result, "success")
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
+        elif 'update_ani_img_db' in request.form:
+            try:
+                result = add_image(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
+                flash(result, "success")
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
 
         elif 'create_sto_table' in request.form:
             try:
@@ -118,9 +132,30 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
             
-        elif "update_sto_urls_db":    
+        elif "update_sto_urls_db" in request.form:    
             try:
                 result = add_all_urls_in_table(table_name=table_names[1],list=get_all_url_names(start_url=websiten_urls[1]))
+                flash(result, "success")
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
+        elif 'update_sto_year_db' in request.form:
+            try:
+                result = add_year(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
+                flash(result, "success")
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
+        elif 'update_ani_name_db' in request.form:
+            try:
+                result = add_name(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
+                flash(result, "success")
+            except Exception as e:
+                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
+
+        elif 'update_ani_img_db' in request.form:
+            try:
+                result = add_image(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
