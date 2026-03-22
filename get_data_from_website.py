@@ -11,15 +11,27 @@ headers = {
 }
 
 def get_all_url_names(start_url):
-    found_urls = set()
+    found_urls = []
+    found_names = set()
 
     response = requests.get(start_url, headers=headers, timeout=10)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
     for a in soup.find_all("a", href=True):
-        
         href = a.get("href")
+        if "ani" in start_url:
+            if not a.get('title') == None:
+                name = a.get('title')
+                name = name.replace(" Stream anschauen","")
+             
+        if "s.to" in start_url:
+            if not a.text == None:
+                name = a.text
+                
+        #print(f"Tag: {a.name}")
+        #print(f"Alle Attribute: {a.attrs}")
+        #print(f"HTML: {a}")
         if not isinstance(href, str):
             continue
 
@@ -30,27 +42,25 @@ def get_all_url_names(start_url):
         
         if not ("/serie/" in href or "/anime/" in href):
             continue
-
-
-
         if "/serie/" in href:
             href = href.replace("/serie/", "")
         if "/stream/" in href:
             href = href.replace("/anime/stream/","")
-        found_urls.add(href)
+
+        found_urls.append((href,name))
+        #found_names.add(name)
 
     sorted_urls = sorted(found_urls)
     return sorted_urls
 
-def add_all_urls_in_table(list:set|list,table_name:str):
-    print("Add url to db")
-    print(list)
+def add_all_urls_and_name_in_table(list:set|list,table_name:str):
     db = DBManager(db_file)
     with tqdm(total=len(list)) as pbar:
         for u in list:
-            finde_url_in_data_base = db.find_by_title_in_table(table_name=table_name,such_url=u)
+            finde_url_in_data_base = db.find_by_title_in_table(table_name=table_name,such_url=u[0])
             if not finde_url_in_data_base:
                 db.add_such_url_in_table(such_url=u,table_name=table_name)
+            db.add_real_name_on_url_in_table(real_name=u[1],such_url=u[0],table_name=table_name)
             pbar.update()
     db.close()
     return f"Updated all urls in {table_name}"
@@ -124,7 +134,7 @@ def add_name(start_url:str,table_name:str):
                 anime_name = get_name(start_url=start_url,such_url=anime_url[1])
                 db.add_real_name_on_url_in_table(real_name=anime_name,such_url=anime_url[1],table_name=table_name)
             pbar.update()
-            time.sleep(0.001)
+            time.sleep(0.01)
     db.close()
     return f"Update Names erfolgreich in {table_name}"
 
@@ -140,7 +150,7 @@ def add_year(start_url:str,table_name:str):
                 anime_year = get_year(start_url=start_url,such_url=anime_url[1])
                 db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year)
             pbar.update()
-            time.sleep(0.001)
+            time.sleep(0.01)
     db.close()
     return f"Update Years erfolgreich in {table_name}"
 
@@ -156,7 +166,6 @@ def add_image(start_url:str,table_name:str):
                 anime_img_url = get_image(start_url=start_url,such_url=anime_url[1])
                 db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_img_url)
             pbar.update()
-            time.sleep(0.001)
+            time.sleep(0.01)
     db.close()
     return f"Update Images erfolgreich in {table_name}"
-
