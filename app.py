@@ -146,14 +146,14 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_ani_name_db' in request.form:
+        elif 'update_sto_name_db' in request.form:
             try:
                 result = add_name(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_ani_img_db' in request.form:
+        elif 'update_sto_img_db' in request.form:
             try:
                 result = add_image(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
                 flash(result, "success")
