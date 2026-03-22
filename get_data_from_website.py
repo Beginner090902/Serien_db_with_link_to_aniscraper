@@ -150,7 +150,7 @@ def add_year(start_url:str,table_name:str):
                 anime_year = get_year(start_url=start_url,such_url=anime_url[1])
                 db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year)
             pbar.update()
-            time.sleep(0.01)
+            time.sleep(0.1)
     db.close()
     return f"Update Years erfolgreich in {table_name}"
 
@@ -166,6 +166,6 @@ def add_image(start_url:str,table_name:str):
                 anime_img_url = get_image(start_url=start_url,such_url=anime_url[1])
                 db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_img_url)
             pbar.update()
-            time.sleep(0.01)
+            time.sleep(0.1)
     db.close()
     return f"Update Images erfolgreich in {table_name}"
