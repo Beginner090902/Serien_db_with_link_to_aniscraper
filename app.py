@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from werkzeug.exceptions import abort
 from db_manager import DBManager
-from get_data_from_website import add_all_urls_in_table, add_image,add_year,add_name, get_all_url_names
+from get_data_from_website import add_all_urls_and_name_in_table, add_image,add_year,add_name, get_all_url_names
 
 db_file="instance/aniworld.db"
 
@@ -38,12 +38,19 @@ def serien_names_aniworld() -> str:
     all_anime_urls: tuple = db.get_all_serien_url_from_table(table_name=table_names[0])
     return render_template('serien_names_aniworld.html',posts=all_anime_urls)
 
-@app.route('/<string:such_url>')
-def serie_name(such_url):
+@app.route('/einzelne_serie_ani/<string:such_url_ani>')
+def einzelne_serie_ani(such_url_ani):
     db = DBManager(db_file)
-    post = db.get_serie_information(such_url=such_url,table_name=table_names[0])
+    post = db.get_serie_information(such_url=such_url_ani,table_name=table_names[0])
     db.close()
-    return render_template('serie.html', post=post)
+    return render_template('einzelne_serie_ani.html', post=post)
+
+@app.route('/einzelne_serie_sto/<string:such_url_sto>')
+def einzelne_serie_sto(such_url_sto):
+    db = DBManager(db_file)
+    post = db.get_serie_information(such_url=such_url_sto,table_name=table_names[1])
+    db.close()
+    return render_template('einzelne_serie_sto.html', post=post)
 
 @app.route('/search-aniworld')
 def search_aniworld():
@@ -54,7 +61,7 @@ def search_aniworld():
         such_name=such_name
     )
     db.close()
-    return render_template('_search_results.html', posts=list_such_name)
+    return render_template('_search_results_ani.html', posts=list_such_name)
 
 @app.route('/search-sto')
 def search_sto():
@@ -65,7 +72,7 @@ def search_sto():
         such_name=such_name
     )
     db.close()
-    return render_template('_search_results.html', posts=list_such_name)
+    return render_template('_search_results_sto.html', posts=list_such_name)
 
 @app.route('/view_database_aniworld')
 def view_database_aniworld():
@@ -97,7 +104,7 @@ def settings():
         elif 'update_ani_urls_db' in request.form:
             try:
                 flash("Start Urls Upadte", "success")
-                result = add_all_urls_in_table(table_name=table_names[0],list=get_all_url_names(start_url=websiten_urls[0]))
+                result = add_all_urls_and_name_in_table(table_name=table_names[0],list=get_all_url_names(start_url=websiten_urls[0]))
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
@@ -105,13 +112,6 @@ def settings():
         elif 'update_ani_year_db' in request.form:
             try:
                 result = add_year(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-        elif 'update_ani_name_db' in request.form:
-            try:
-                result = add_name(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
@@ -134,7 +134,7 @@ def settings():
             
         elif "update_sto_urls_db" in request.form:    
             try:
-                result = add_all_urls_in_table(table_name=table_names[1],list=get_all_url_names(start_url=websiten_urls[1]))
+                result = add_all_urls_and_name_in_table(table_name=table_names[1],list=get_all_url_names(start_url=websiten_urls[1]))
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
@@ -142,13 +142,6 @@ def settings():
         elif 'update_sto_year_db' in request.form:
             try:
                 result = add_year(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-        elif 'update_sto_name_db' in request.form:
-            try:
-                result = add_name(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
