@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from werkzeug.exceptions import abort
 from db_manager import DBManager
-from get_data_from_website import add_all_urls_and_name_in_table, add_image,add_year,add_name, get_all_url_names
+from get_data_from_website import add_all_urls_and_name_in_table, add_year_and_img, get_all_url_names
 
 db_file="instance/aniworld.db"
 
@@ -101,7 +101,7 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_ani_urls_db' in request.form:
+        elif 'update_ani_urls_name_db' in request.form:
             try:
                 flash("Start Urls Upadte", "success")
                 result = add_all_urls_and_name_in_table(table_name=table_names[0],list=get_all_url_names(start_url=websiten_urls[0]))
@@ -109,16 +109,9 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_ani_year_db' in request.form:
+        elif 'update_ani_year_img_db' in request.form:
             try:
-                result = add_year(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-        elif 'update_ani_img_db' in request.form:
-            try:
-                result = add_image(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
+                result = add_year_and_img(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
@@ -132,26 +125,20 @@ def settings():
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
             
-        elif "update_sto_urls_db" in request.form:    
+        elif "update_sto_urls_name_db" in request.form:    
             try:
                 result = add_all_urls_and_name_in_table(table_name=table_names[1],list=get_all_url_names(start_url=websiten_urls[1]))
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_sto_year_db' in request.form:
+        elif 'update_sto_year_img_db' in request.form:
             try:
-                result = add_year(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
+                result = add_year_and_img(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
 
-        elif 'update_sto_img_db' in request.form:
-            try:
-                result = add_image(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
                 
 
     return render_template('settings.html')

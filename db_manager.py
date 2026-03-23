@@ -129,5 +129,5 @@ if __name__ =="__main__":
     db_file="instance/aniworld.db"
 
     db = DBManager(db_file)
-    db.clear_collum(table_name="anime_namen",collum_name="such_url")
+    db.clear_collum(table_name="serien_namen",collum_name="image_url")
     db.close()

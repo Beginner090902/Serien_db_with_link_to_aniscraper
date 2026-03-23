@@ -12,7 +12,6 @@ headers = {
 
 def get_all_url_names(start_url):
     found_urls = []
-    found_names = set()
 
     response = requests.get(start_url, headers=headers, timeout=10)
     response.raise_for_status()
@@ -65,7 +64,7 @@ def add_all_urls_and_name_in_table(list:set|list,table_name:str):
     db.close()
     return f"Updated all urls in {table_name}"
 
-def get_year(start_url:str,such_url:str) -> str:
+def get_year_and_name(start_url:str,such_url:str) -> str:
     if "aniworld" in start_url:
         full_url = f"{start_url}stream/{such_url}"
         response = requests.get(full_url, headers=headers, timeout=100)
@@ -74,98 +73,49 @@ def get_year(start_url:str,such_url:str) -> str:
         jahr_start = soup.find("span", itemprop="startDate").find("a").text.strip()
         jahr_ende = soup.find("span", itemprop="endDate").find("a").text.strip()
         jahr_zusammen= f"{jahr_start}-{jahr_ende}"
-    elif"s.to" in start_url:
-        full_url = f"{start_url}stream/{such_url}"
-        response = requests.get(full_url, headers=headers, timeout=100)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        jahr_start = soup.find("a", "small text-muted").text.strip()
-        jahr_ende = soup.find("a", "small -textmuted").text.strip()
-        jahr_zusammen= f"{jahr_start}-{jahr_ende}"
 
-    return jahr_zusammen
-
-def get_name(start_url:str,such_url:str):
-    if "aniworld" in start_url:
-        full_url = f"{start_url}stream/{such_url}"
-        response = requests.get(full_url, headers=headers, timeout=100)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        real_name = soup.find("h1").find("span").text.strip()
-    elif"s.to" in start_url:
-        full_url = f"{start_url}stream/{such_url}"
-        response = requests.get(full_url, headers=headers, timeout=100)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        real_name = soup.find("h1", "h2 mb-1 fw-bold").text.strip()
-    
-    return real_name
-
-def get_image(start_url:str,such_url:str): 
-    if "aniworld" in start_url:
-        full_url = f"{start_url}stream/{such_url}"
-        response = requests.get(full_url, headers=headers, timeout=100)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
         img = soup.find("img", itemprop="image")
         img_url_intern = img.get("data-src")
         img_url = urljoin(start_url, img_url_intern)
-    elif "s.to" in start_url:
-        full_url = f"{start_url}stream/{such_url}"
+
+    elif"s.to" in start_url:
+        full_url = f"{start_url}{such_url}"
+        #print(f"full url {full_url}")
         response = requests.get(full_url, headers=headers, timeout=100)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
+        jahr_anzeige = soup.find("p")
+        jahr_start = jahr_anzeige.find("a","small text-muted").text.strip()
+        #print(f"Jahr start {jahr_start}")
+        jahr_ende = jahr_anzeige.find_next("a","small text-muted").text.strip()
+        #print(f"Jahr ende {jahr_ende}")
+        jahr_zusammen= f"{jahr_start}-{jahr_ende}"
+        #print(f"Jahr zusammen {jahr_zusammen}")
+
         img_grob_gefunden = soup.find("div","d-md-none float-end text-end show-cover-mobile")
         img = img_grob_gefunden.find("img")
         img_url_intern = img.get('data-src')
         img_url = urljoin(start_url, img_url_intern)
-        
-    return img_url
 
-def add_name(start_url:str,table_name:str):
+    return jahr_zusammen,img_url
+
+
+
+def add_year_and_img(start_url:str,table_name:str):
     db = DBManager(db_file)
     list_of_all_anime = db.get_all_in_table(table_name=table_name)
 
-    print("Update all Names ")
-    with tqdm(total=len(list_of_all_anime)) as pbar:
-        for anime_url in list_of_all_anime:
-            #print(anime_url[2])
-            if anime_url[2] == None: 
-                anime_name = get_name(start_url=start_url,such_url=anime_url[1])
-                db.add_real_name_on_url_in_table(real_name=anime_name,such_url=anime_url[1],table_name=table_name)
-            pbar.update()
-            time.sleep(0.01)
-    db.close()
-    return f"Update Names erfolgreich in {table_name}"
-
-def add_year(start_url:str,table_name:str):
-    db = DBManager(db_file)
-    list_of_all_anime = db.get_all_in_table(table_name=table_name)
-
-    print("Update all year stamps ")
+    print("Update all year and Images stamps ")
     with tqdm(total=len(list_of_all_anime)) as pbar:
         for anime_url in list_of_all_anime:
             #print(anime_url[3])
-            if anime_url[3] == None:
-                anime_year = get_year(start_url=start_url,such_url=anime_url[1])
-                db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year)
+            if (anime_url[3] == None) or (anime_url[4] == None):
+                anime_year_and_name = get_year_and_name(start_url=start_url,such_url=anime_url[1])
+                db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year_and_name[0])
+                db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_year_and_name[1])
             pbar.update()
             time.sleep(0.1)
     db.close()
-    return f"Update Years erfolgreich in {table_name}"
+    return f"Update Years and Images erfolgreich in {table_name}"
 
-def add_image(start_url:str,table_name:str):
-    db = DBManager(db_file)
-    list_of_all_anime = db.get_all_in_table(table_name=table_name)
 
-    print("Update all Images ")
-    with tqdm(total=len(list_of_all_anime)) as pbar:
-        for anime_url in list_of_all_anime:
-            #print(anime_url[4])
-            if anime_url[4] == None:
-                anime_img_url = get_image(start_url=start_url,such_url=anime_url[1])
-                db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_img_url)
-            pbar.update()
-            time.sleep(0.1)
-    db.close()
-    return f"Update Images erfolgreich in {table_name}"
