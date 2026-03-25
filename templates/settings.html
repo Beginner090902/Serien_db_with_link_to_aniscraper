@@ -16,7 +16,28 @@ content %}
     </button>
   </div>
   {% endfor %} {% endif %} {% endwith %}
-
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>db settings</h5>
+        </div>
+        <div class="card-body">
+          <!-- POST-Formular für Ani DB -->
+          <form method="POST" action="{{ url_for('settings') }}">
+            <button
+              type="submit"
+              name="create_ani_sto_table"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              Create db table for Ani and sto
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-6">
       <div class="card">
@@ -24,17 +45,6 @@ content %}
           <h5>Aniworld db settings</h5>
         </div>
         <div class="card-body">
-          <!-- POST-Formular für Ani DB -->
-          <form method="POST" action="{{ url_for('settings') }}">
-            <button
-              type="submit"
-              name="create_ani_table"
-              value="1"
-              class="btn btn-primary mb-2"
-            >
-              Create db table for Ani
-            </button>
-          </form>
           <form method="POST" action="{{ url_for('settings') }}">
             <button
               type="submit"
@@ -43,16 +53,6 @@ content %}
               class="btn btn-primary mb-2"
             >
               Update db Urls and Names for Ani
-            </button>
-          </form>
-          <form method="POST" action="{{ url_for('settings') }}">
-            <button
-              type="submit"
-              name="update_ani_year_img_db"
-              value="1"
-              class="btn btn-primary mb-2"
-            >
-              Update db Years and Img for Ani
             </button>
           </form>
         </div>
@@ -66,17 +66,6 @@ content %}
           <h5>Sto db settings</h5>
         </div>
         <div class="card-body">
-          <!-- POST-Formular für Ani DB -->
-          <form method="POST" action="{{ url_for('settings') }}">
-            <button
-              type="submit"
-              name="create_sto_table"
-              value="1"
-              class="btn btn-primary mb-2"
-            >
-              Create db table for Sto
-            </button>
-          </form>
           <form method="POST" action="{{ url_for('settings') }}">
             <button
               type="submit"
@@ -85,16 +74,6 @@ content %}
               class="btn btn-primary mb-2"
             >
               Update db Urls and Names for Sto
-            </button>
-          </form>
-          <form method="POST" action="{{ url_for('settings') }}">
-            <button
-              type="submit"
-              name="update_sto_year_img_db"
-              value="1"
-              class="btn btn-primary mb-2"
-            >
-              Update db Years and Img for Sto
             </button>
           </form>
         </div>

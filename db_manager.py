@@ -37,9 +37,7 @@ class DBManager:
         CREATE TABLE IF NOT EXISTS {table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             such_url TEXT NOT NULL,
-            real_name TEXT,
-            year TEXT,
-            image_url TEXT
+            real_name TEXT
         )
         """
         self.execute(sql)

@@ -1,11 +1,11 @@
 import get_data_from_website
-from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask import Flask, render_template, redirect, url_for, flash, request, session,jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from werkzeug.exceptions import abort
 from db_manager import DBManager
-from get_data_from_website import add_all_urls_and_name_in_table, add_year_and_img, get_all_url_names
+from get_data_from_website import add_all_urls_and_name_in_table,get_year_and_name, add_year_and_img, get_all_url_names
 
 db_file="instance/aniworld.db"
 
@@ -88,15 +88,41 @@ def view_database_sto():
 
     return render_template('view_db.html', daten=liste_table)
 
+@app.route('/get_post_sto')
+def get_post_sto():
+    yahr_img = get_year_and_name(start_url=webseiten_einzelneserie_url[1],such_url=request.args.get('such_url', '').lower())
+    print(yahr_img)
+    
+    data = {
+        f"year": yahr_img[0],
+        "myImg": yahr_img[1]
+    }
+    print(data)
+    return jsonify(data)
+
+@app.route('/get_post_ani')
+def get_post_ani():
+    yahr_img = get_year_and_name(start_url=webseiten_einzelneserie_url[0],such_url=request.args.get('such_url', '').lower())
+    print(yahr_img)
+    
+    data = {
+        f"year": yahr_img[0],
+        "myImg": yahr_img[1]
+    }
+    print(data)
+    return jsonify(data)
+
+
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():    
     if request.method == 'POST':
         db = DBManager(db_file)        
         
-        if 'create_ani_table' in request.form:
+        if 'create_ani_sto_table' in request.form:
             try:
-                result = db.create_table(table_names[0])
-                flash(result, 'success')
+                for name in table_names:
+                    result = db.create_table(name)
+                    flash(result, 'success')
 
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
@@ -108,22 +134,6 @@ def settings():
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-        elif 'update_ani_year_img_db' in request.form:
-            try:
-                result = add_year_and_img(start_url=webseiten_einzelneserie_url[0],table_name=table_names[0])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-
-        elif 'create_sto_table' in request.form:
-            try:
-                result = db.create_table(table_names[1])
-                flash(result, 'success')
-
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
             
         elif "update_sto_urls_name_db" in request.form:    
             try:
@@ -131,14 +141,6 @@ def settings():
                 flash(result, "success")
             except Exception as e:
                 flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
-        elif 'update_sto_year_img_db' in request.form:
-            try:
-                result = add_year_and_img(start_url=webseiten_einzelneserie_url[1],table_name=table_names[1])
-                flash(result, "success")
-            except Exception as e:
-                flash(f'Fehler beim Erstellen: {str(e)}', 'danger')
-
                 
 
     return render_template('settings.html')
@@ -157,4 +159,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True)

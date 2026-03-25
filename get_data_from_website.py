@@ -1,3 +1,4 @@
+from time import time
 import requests
 from bs4 import BeautifulSoup
 from db_manager import DBManager
@@ -50,17 +51,20 @@ def get_all_url_names(start_url):
         #found_names.add(name)
 
     sorted_urls = sorted(found_urls)
+    #print(sorted_urls)
     return sorted_urls
 
 def add_all_urls_and_name_in_table(list:set|list,table_name:str):
     db = DBManager(db_file)
     with tqdm(total=len(list)) as pbar:
         for u in list:
+            #print(u)
             finde_url_in_data_base = db.find_by_title_in_table(table_name=table_name,such_url=u[0])
             if not finde_url_in_data_base:
-                db.add_such_url_in_table(such_url=u,table_name=table_name)
+                db.add_such_url_in_table(such_url=u[0],table_name=table_name)
             db.add_real_name_on_url_in_table(real_name=u[1],such_url=u[0],table_name=table_name)
             pbar.update()
+            time.sleep(0.001)
     db.close()
     return f"Updated all urls in {table_name}"
 
@@ -96,7 +100,7 @@ def get_year_and_name(start_url:str,such_url:str) -> str:
         img = img_grob_gefunden.find("img")
         img_url_intern = img.get('data-src')
         img_url = urljoin(start_url, img_url_intern)
-
+    
     return jahr_zusammen,img_url
 
 
@@ -113,8 +117,10 @@ def add_year_and_img(start_url:str,table_name:str):
                 anime_year_and_name = get_year_and_name(start_url=start_url,such_url=anime_url[1])
                 db.add_year_in_table(table_name=table_name,such_url=anime_url[1],year=anime_year_and_name[0])
                 db.add_image_in_table(table_name=table_name,such_url=anime_url[1],image_url=anime_year_and_name[1])
+                time.sleep(1)
             pbar.update()
-            time.sleep(0.1)
+            time.sleep(0.001)
+            
     db.close()
     return f"Update Years and Images erfolgreich in {table_name}"
 
