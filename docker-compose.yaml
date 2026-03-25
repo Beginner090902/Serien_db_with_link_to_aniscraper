@@ -5,11 +5,11 @@ services:
     container_name: MM
     image: beginner090902/mediamanagerforaniscraper:latest
     ports:
-      - "5001:5000"
+      - "5002:5000"
     depends_on:
       - Aniworld
   Aniworld:
     container_name: Aniworld
     image: beginner090902/aniworld_scraper_fork:latest
     ports:
-      - "5002:5000"
+      - "5001:5000"
