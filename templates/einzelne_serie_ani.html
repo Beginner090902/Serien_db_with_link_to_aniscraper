@@ -20,7 +20,7 @@
               <input type="hidden" name="language" value="Deutsch" />
               <input type="hidden" name="dlMode" value="Series" />
               <input type="hidden" name="cliProvider" value="VOE" />
-              <input type="hidden" name="name" value="one-piece" />
+              <input type="hidden" name="name" value="name-name-name" />
               <input type="hidden" name="season_override" value="0" />
 
               <button type="submit" class="btn btn-success me-2">
@@ -65,22 +65,22 @@
   });
   const form = document.getElementById("myForm");
 
-form.addEventListener("submit", function(event) {
-  event.preventDefault(); // verhindert page reload
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // verhindert page reload
 
-  const formData = new FormData(form);
+    const formData = new FormData(form);
 
-  fetch("http://localhost:5001/", {
-    method: "POST",
-    body: formData    // FormData sendet die Felder als Form‑POST
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log("Erfolg:", data);
-  })
-  .catch(error => {
-    console.error("Fehler:", error);
+    fetch("http://localhost:5001/", {
+      method: "POST",
+      body: formData, // FormData sendet die Felder als Form‑POST
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Erfolg:", data);
+      })
+      .catch((error) => {
+        console.error("Fehler:", error);
+      });
   });
-});
 </script>
 {% endblock %}
