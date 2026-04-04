@@ -21,4 +21,4 @@ RUN groupadd -g 1000 appgroup && \
 
 USER appuser
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "--worker-class", "gevent", "--bind", "0.0.0.0:5002", "app:app"]
