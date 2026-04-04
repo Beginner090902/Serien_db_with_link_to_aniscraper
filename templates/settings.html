@@ -80,5 +80,34 @@ content %}
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>View db</h5>
+        </div>
+        <div class="card-body">
+          <a class="nav-link" href="{{ url_for('view_database_aniworld') }}">
+            <button
+              type="submit"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              View ani db
+            </button>
+          </a>
+          <a class="nav-link" href="{{ url_for('view_database_sto') }}">
+            <button
+              type="submit"
+              value="1"
+              class="btn btn-primary mb-2"
+            >
+              View sto db
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
